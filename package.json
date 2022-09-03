@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An API for a benefit card system for company employees",
   "main": "index.js",
+  "type":"module",
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon ./src/index.ts",
@@ -38,6 +39,8 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "eslint": "^8.23.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.2"
