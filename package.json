@@ -41,6 +41,7 @@
   "homepage": "https://github.com/FlaviaBulad/projeto18-valex#readme",
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
+    "@types/bcrypt": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "eslint": "^8.23.0",

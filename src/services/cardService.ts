@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { faker } from '@faker-js/faker';
-
 import dayjs from 'dayjs';
 import Cryptr from 'cryptr';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 
 import * as companyRepository from '../repositories/companyRepository.js';
 import * as employeeRepository from '../repositories/employeeRepository.js';
@@ -38,13 +38,13 @@ export async function createCard(
     '63[7-9]#-####-####-###L'
   );
 
-  const securityCode = faker.finance.creditCardCVV();
+  const securityCode: string = faker.finance.creditCardCVV();
 
-  const cryptrSecret = process.env.CRYPTR_SECRET;
+  const cryptrSecret: string = process.env.CRYPTR_SECRET;
 
   const cryptr = new Cryptr(cryptrSecret);
 
-  const encryptedSecurityCode = cryptr.encrypt(securityCode);
+  const encryptedSecurityCode: string = cryptr.encrypt(securityCode);
 
   const [firstName, ...familyName]: string[] = employee.fullName.split(' ');
   const middleName = familyName.filter((name) => name.length >= 3);
@@ -70,4 +70,39 @@ export async function createCard(
     isBlocked: false,
     type,
   });
+}
+
+export async function activateCard(id: number, cvc: string, password: string) {
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
+  const now = dayjs().format('MM/YY');
+
+  if (dayjs(now).isAfter(dayjs(card.expirationDate))) {
+    throw { type: 'badRequest' };
+  }
+
+  const isAlreadyActivated = card.password;
+
+  if (isAlreadyActivated) {
+    throw { type: 'badRequest' };
+  }
+
+  const cryptrSecret: string = process.env.CRYPTR_SECRET;
+
+  const cryptr = new Cryptr(cryptrSecret);
+
+  const decryptedSecurityCode: string = cryptr.decrypt(card.securityCode);
+
+  if (cvc !== decryptedSecurityCode) {
+    throw { type: 'unauthorized' };
+  }
+
+  const SALT: number = Number(process.env.SALT);
+
+  const passwordHash = bcrypt.hashSync(password, SALT);
+
+  await cardRepository.update(id, { password: passwordHash });
 }

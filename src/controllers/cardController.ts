@@ -13,3 +13,13 @@ export async function createCard(req: Request, res: Response) {
 
   res.sendStatus(201); // created
 }
+
+export async function activateCard(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const { cvc, password } = req.body;
+
+  await cardService.activateCard(Number(id), cvc, password);
+
+  res.sendStatus(200); // ok
+}

@@ -8,6 +8,9 @@ export const createCardSchema = joi.object({
     .required(),
 });
 
-export const activateCardSchema = joi.object({});
+export const activateCardSchema = joi.object({
+  cvc: joi.string().required(),
+  password: joi.string().pattern(/^[0-9]{4}$/),
+});
 
 export const rechargeCardSchema = joi.object({});

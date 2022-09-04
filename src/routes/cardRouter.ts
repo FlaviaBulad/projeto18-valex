@@ -2,7 +2,10 @@ import { Router } from 'express';
 
 import * as cardController from '../controllers/cardController.js';
 import validateSchema from '../middlewares/schemaValidator.js';
-import { createCardSchema } from '../schemas/cardSchemas.js';
+import {
+  createCardSchema,
+  activateCardSchema,
+} from '../schemas/cardSchemas.js';
 
 const cardRouter = Router();
 
@@ -11,7 +14,13 @@ cardRouter.post(
   validateSchema(createCardSchema),
   cardController.createCard
 );
-cardRouter.post('/cards:id/activate'); // activate card by id
-cardRouter.post('/cards:id/recharge'); // rechard card by id
+
+cardRouter.post(
+  '/cards:id/activate',
+  validateSchema(activateCardSchema),
+  cardController.activateCard
+);
+
+cardRouter.post('/cards:id/recharge');
 
 export default cardRouter;
