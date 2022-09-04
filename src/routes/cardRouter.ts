@@ -16,7 +16,7 @@ cardRouter.post(
 );
 
 cardRouter.post(
-  '/cards:id/activate',
+  '/cards/:id/activate',
   validateSchema(activateCardSchema),
   cardController.activateCard
 );
