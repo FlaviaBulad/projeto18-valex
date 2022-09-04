@@ -107,3 +107,24 @@ export async function activateCard(id: number, cvc: string, password: string) {
 
   await cardRepository.update(id, { password: passwordHash });
 }
+
+export async function rechargeCard(apiKey: string, id: number, amount: number) {
+  const company = await companyRepository.findByApiKey(apiKey);
+
+  if (!company) {
+    throw { type: 'unauthorized' };
+  }
+
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
+  const now = dayjs().format('MM/YY');
+
+  if (dayjs(now).isAfter(dayjs(card.expirationDate))) {
+    throw { type: 'badRequest' };
+  }
+
+  await rechargeRepository.insert({ cardId: id, amount });
+}

@@ -23,3 +23,16 @@ export async function activateCard(req: Request, res: Response) {
 
   res.sendStatus(200); // ok
 }
+
+export async function rechargeCard(req: Request, res: Response) {
+  const { id } = req.params;
+  const { amount } = req.body;
+
+  const apiKey = req.headers['x-api-key'] as string;
+  if (!apiKey) {
+    throw { type: 'unauthorized' };
+  }
+  await cardService.rechargeCard(apiKey, Number(id), amount);
+
+  res.sendStatus(200);
+}
