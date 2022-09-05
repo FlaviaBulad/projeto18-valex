@@ -132,6 +132,11 @@ export async function rechargeCard(apiKey: string, id: number, amount: number) {
 }
 
 export async function balance(id: number) {
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
   const payments = await paymentRepository.findByCardId(id);
   const recharges = await rechargeRepository.findByCardId(id);
 
