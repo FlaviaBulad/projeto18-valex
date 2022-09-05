@@ -10,18 +10,15 @@ export const createCardSchema = joi.object({
 
 export const activateCardSchema = joi.object({
   cvc: joi.string().required(),
-  password: joi.string().pattern(/^[0-9]{4}$/),
-});
-
-export const rechargeCardSchema = joi.object({
-  amount: joi.number().min(1).required(),
-});
-
-export const paymentSchema = joi.object({
-  password: joi.string().pattern(/^[0-9]{4}$/),
-  amount: joi.number().min(1).required(),
+  password: joi
+    .string()
+    .pattern(/^[0-9]{4}$/)
+    .required(),
 });
 
 export const lockSchema = joi.object({
-  password: joi.string().pattern(/^[0-9]{4}$/),
+  password: joi
+    .string()
+    .pattern(/^[0-9]{4}$/)
+    .required(),
 });

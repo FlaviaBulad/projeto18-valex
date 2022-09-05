@@ -1,14 +1,19 @@
 import { Router } from 'express';
 
 import * as cardController from '../controllers/cardController.js';
+import * as rechargeController from '../controllers/rechargeController.js';
+import * as balanceController from '../controllers/balanceController.js';
+import * as paymentController from '../controllers/paymentController.js';
+
 import validateSchema from '../middlewares/schemaValidator.js';
 import {
   createCardSchema,
   activateCardSchema,
-  rechargeCardSchema,
-  paymentSchema,
   lockSchema,
 } from '../schemas/cardSchemas.js';
+
+import { rechargeSchema } from '../schemas/rechargeSchema.js';
+import { paymentSchema } from '../schemas/paymentSchema.js';
 
 const cardRouter = Router();
 
@@ -18,7 +23,7 @@ cardRouter.post(
   cardController.createCard
 );
 
-cardRouter.post(
+cardRouter.put(
   '/cards/:id/activate',
   validateSchema(activateCardSchema),
   cardController.activateCard
@@ -26,28 +31,28 @@ cardRouter.post(
 
 cardRouter.post(
   '/cards/:id/recharge',
-  validateSchema(rechargeCardSchema),
-  cardController.rechargeCard
+  validateSchema(rechargeSchema),
+  rechargeController.rechargeCard
 );
 
-cardRouter.post(
+cardRouter.put(
   '/cards/:id/lock',
   validateSchema(lockSchema),
   cardController.lockCard
 );
 
-cardRouter.post(
+cardRouter.put(
   '/cards/:id/unlock',
   validateSchema(lockSchema),
   cardController.unlockCard
 );
 
-cardRouter.get('/cards/:id/balance', cardController.balance);
+cardRouter.get('/cards/:id/balance', balanceController.balance);
 
 cardRouter.post(
   '/cards/:id/payment/:businessId',
   validateSchema(paymentSchema),
-  cardController.payment
+  paymentController.payment
 );
 
 export default cardRouter;
