@@ -35,6 +35,7 @@ function generateCardData(employeeName: string) {
   const cardholderName = cardUtils.generateCardHolderName(employeeName);
 
   const securityCode: string = faker.finance.creditCardCVV();
+  console.log(` ${cardholderName} ${number} ${securityCode} ${expirationDate}`);
 
   const encryptedSecurityCode: string =
     cardUtils.encryptSecurityCode(securityCode);

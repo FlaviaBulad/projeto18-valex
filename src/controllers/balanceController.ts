@@ -7,5 +7,5 @@ export async function balance(req: Request, res: Response) {
 
   const balance = await balanceService.getBalanceAndTransactions(Number(id));
 
-  res.sendStatus(200).send(balance); // ok
+  res.status(200).send(balance); // ok
 }
