@@ -36,3 +36,12 @@ export async function rechargeCard(req: Request, res: Response) {
 
   res.sendStatus(200);
 }
+
+export async function payment(req: Request, res: Response) {
+  const { id, businessId } = req.params;
+  const { password, amount } = req.body;
+
+  await cardService.payment(Number(id), password, Number(businessId), amount);
+
+  res.sendStatus(201); // created
+}

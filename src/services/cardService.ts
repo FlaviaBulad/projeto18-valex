@@ -9,6 +9,8 @@ import * as companyRepository from '../repositories/companyRepository.js';
 import * as employeeRepository from '../repositories/employeeRepository.js';
 import * as cardRepository from '../repositories/cardRepository.js';
 import * as rechargeRepository from '../repositories/rechargeRepository.js';
+import * as businessRepository from '../repositories/businessRepository.js';
+import * as paymentRepository from '../repositories/paymentRepository.js';
 
 dotenv.config();
 
@@ -127,4 +129,57 @@ export async function rechargeCard(apiKey: string, id: number, amount: number) {
   }
 
   await rechargeRepository.insert({ cardId: id, amount });
+}
+
+export async function payment(
+  id: number,
+  password: string,
+  businessId: number,
+  amount: number
+) {
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
+  const now = dayjs().format('MM/YY');
+
+  if (dayjs(now).isAfter(dayjs(card.expirationDate))) {
+    throw { type: 'badRequest' };
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, card.password);
+
+  if (!isPasswordCorrect) {
+    throw { type: 'unauthorized' };
+  }
+
+  const business = await businessRepository.findById(businessId);
+  if (!business) {
+    throw { type: 'notFound' };
+  }
+
+  if (card.type !== business.type) {
+    throw { type: 'badRequest' };
+  }
+
+  const payments = await paymentRepository.findByCardId(id);
+  const recharges = await rechargeRepository.findByCardId(id);
+
+  const totalpaymentAmount = payments.reduce(
+    (amount, payment) => amount + payment.amount,
+    0
+  );
+
+  const totalRechargeAmount = recharges.reduce(
+    (amount, recharge) => amount + recharge.amount,
+    0
+  );
+
+  const cardAmount = totalRechargeAmount - totalpaymentAmount;
+  if (cardAmount < amount) {
+    throw { type: 'badRequest' };
+  }
+
+  await paymentRepository.insert({ cardId: id, businessId, amount });
 }
