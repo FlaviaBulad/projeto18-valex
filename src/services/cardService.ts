@@ -131,6 +131,23 @@ export async function rechargeCard(apiKey: string, id: number, amount: number) {
   await rechargeRepository.insert({ cardId: id, amount });
 }
 
+export async function balance(id: number) {
+  const payments = await paymentRepository.findByCardId(id);
+  const recharges = await rechargeRepository.findByCardId(id);
+
+  const totalpaymentAmount = payments.reduce(
+    (amount, payment) => amount + payment.amount,
+    0
+  );
+
+  const totalRechargeAmount = recharges.reduce(
+    (amount, recharge) => amount + recharge.amount,
+    0
+  );
+
+  return totalRechargeAmount - totalpaymentAmount;
+}
+
 export async function payment(
   id: number,
   password: string,

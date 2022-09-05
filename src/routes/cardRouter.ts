@@ -42,11 +42,7 @@ cardRouter.post(
   cardController.unlockCard
 );
 
-cardRouter.get(
-  '/cards/:id/balance',
-  validateSchema(paymentSchema),
-  cardController.payment
-);
+cardRouter.get('/cards/:id/balance', cardController.balance);
 
 cardRouter.post(
   '/cards/:id/payment/:businessId',

@@ -63,3 +63,11 @@ export async function unlockCard(req: Request, res: Response) {
 
   res.sendStatus(200); // ok
 }
+
+export async function balance(req: Request, res: Response) {
+  const { id } = req.params;
+
+  await cardService.balance(Number(id));
+
+  res.sendStatus(200); // ok
+}
