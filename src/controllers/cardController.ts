@@ -45,3 +45,21 @@ export async function payment(req: Request, res: Response) {
 
   res.sendStatus(201); // created
 }
+
+export async function lockCard(req: Request, res: Response) {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  await cardService.lockCard(Number(id), password);
+
+  res.sendStatus(200); // ok
+}
+
+export async function unlockCard(req: Request, res: Response) {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  await cardService.unlockCard(Number(id), password);
+
+  res.sendStatus(200); // ok
+}

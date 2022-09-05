@@ -7,6 +7,7 @@ import {
   activateCardSchema,
   rechargeCardSchema,
   paymentSchema,
+  lockSchema,
 } from '../schemas/cardSchemas.js';
 
 const cardRouter = Router();
@@ -27,6 +28,24 @@ cardRouter.post(
   '/cards/:id/recharge',
   validateSchema(rechargeCardSchema),
   cardController.rechargeCard
+);
+
+cardRouter.post(
+  '/cards/:id/lock',
+  validateSchema(lockSchema),
+  cardController.lockCard
+);
+
+cardRouter.post(
+  '/cards/:id/unlock',
+  validateSchema(lockSchema),
+  cardController.unlockCard
+);
+
+cardRouter.get(
+  '/cards/:id/balance',
+  validateSchema(paymentSchema),
+  cardController.payment
 );
 
 cardRouter.post(

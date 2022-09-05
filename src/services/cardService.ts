@@ -183,3 +183,61 @@ export async function payment(
 
   await paymentRepository.insert({ cardId: id, businessId, amount });
 }
+
+export async function lockCard(id: number, password: string) {
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
+  const now = dayjs().format('MM/YY');
+
+  if (dayjs(now).isAfter(dayjs(card.expirationDate))) {
+    throw { type: 'badRequest' };
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, card.password);
+
+  if (!isPasswordCorrect) {
+    throw { type: 'unauthorized' };
+  }
+
+  if (card.isBlocked) {
+    throw { type: 'conflict' };
+  }
+
+  const cardUpdated: cardRepository.CardUpdateData = {
+    isBlocked: true,
+  };
+
+  await cardRepository.update(id, cardUpdated);
+}
+
+export async function unlockCard(id: number, password: string) {
+  const card = await cardRepository.findById(id);
+  if (!card) {
+    throw { type: 'notFound' };
+  }
+
+  const now = dayjs().format('MM/YY');
+
+  if (dayjs(now).isAfter(dayjs(card.expirationDate))) {
+    throw { type: 'badRequest' };
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, card.password);
+
+  if (!isPasswordCorrect) {
+    throw { type: 'unauthorized' };
+  }
+
+  if (!card.isBlocked) {
+    throw { type: 'conflict' };
+  }
+
+  const cardUpdated: cardRepository.CardUpdateData = {
+    isBlocked: false,
+  };
+
+  await cardRepository.update(id, cardUpdated);
+}
