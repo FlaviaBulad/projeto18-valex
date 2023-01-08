@@ -1,11 +1,11 @@
-# projeto18-valex API
+# Valex API
 
 ## Preparativos
 
 ### Clone o repositório:
 
 ```bash
-$ https://github.com/FlaviaBulad/projeto18-valex.git
+$ https://github.com/FlaviaBulad/valex-api.git
 ```
 
 ### Instale as dependências:
